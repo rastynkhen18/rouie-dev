@@ -814,6 +814,41 @@
                 padding-right: 0;
             }
 
+            /* Center the portrait block on small screens */
+            .hero-visual {
+                justify-content: center;
+                padding-right: 0;
+            }
+
+            .hero-portrait {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                margin: 0 auto;
+                display: block;
+                transform: none !important;
+            }
+
+            /* Center hero content and tighten spacing on small screens */
+            .hero-content {
+                text-align: center;
+                padding: 0 1rem;
+            }
+
+            /* Collapse hero stats into a single column */
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .stat {
+                border-left: none;
+                padding-left: 0;
+            }
+
+            /* Slightly reduce CTA spacing */
+            .cta-buttons { justify-content: center; }
+
             /* Make project grid single column on small screens */
             .project-grid {
                 grid-template-columns: 1fr !important;
@@ -966,6 +1001,16 @@
                 min-width: 80px;
                 font-size: 11px;
             }
+        }
+
+        /* Extra small screens adjustments */
+        @media (max-width: 480px) {
+            .hero { padding-top: 6rem; padding-bottom: 2rem; gap: 1.25rem; }
+            .hero-content h1 { font-size: 1.5rem; }
+            .hero-content p { font-size: 0.95rem; }
+            .hero-portrait { width: clamp(100px, 36vw, 180px); border-width: 4px; }
+            .cta-buttons { flex-direction: column; gap: 0.6rem; }
+            .btn { width: 100%; text-align: center; }
         }
     </style>
 </head>
