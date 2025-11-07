@@ -51,6 +51,15 @@
             border-bottom: 1px solid var(--border);
         }
 
+        /* Mobile nav toggle */
+        .nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.4rem;
+        }
+
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
@@ -95,7 +104,8 @@
         /* Hero Section */
         .hero {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            /* Reserve a second column sized to hold the portrait without overlapping content */
+            grid-template-columns: 1fr minmax(260px, 420px);
             gap: 4rem;
             align-items: center;
             min-height: 100vh;
@@ -189,19 +199,17 @@
         }
 
         .hero-visual {
+            /* keep visual inside its grid column; center it horizontally */
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-right: 2.5rem;
-            /* keep visual off the very edge */
-            transform: translateX(-6rem);
-            /* nudge the visual toward center */
+            padding-right: 0.5rem;
         }
 
         .hero-card {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(255, 107, 53, 0.1) 100%);
             border: 1px solid var(--border);
             border-radius: 1rem;
@@ -210,19 +218,16 @@
             animation: float 3s ease-in-out infinite;
         }
 
-        /* Floating portrait that visually 'floats' over the hero card */
+        /* Portrait stays in the right column (in-flow) and scales responsively */
         .hero-portrait {
-            position: absolute;
-            right: -10px;
-
-            top: -30px;
-            width: 260px;
-
-            height: 260px;
+            position: relative; /* in-flow so it doesn't overlap the left column */
+            margin-left: auto; /* keep it anchored to the right edge of its column */
+            width: clamp(140px, 20vw, 320px);
+            aspect-ratio: 1 / 1;
             border-radius: 50%;
             object-fit: cover;
             border: 6px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), 0 8px 18px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45), 0 6px 14px rgba(0, 0, 0, 0.35);
             transform: translateY(0) rotate(-2deg);
             animation: portraitFloat 4s ease-in-out infinite;
         }
@@ -236,6 +241,13 @@
 
             50% {
                 transform: translateY(-18px) rotate(-2deg);
+            }
+        }
+
+        /* Ensure hero content keeps clear space for the portrait on wide screens */
+        @media (min-width: 769px) {
+            .hero-content {
+                padding-right: clamp(80px, 12vw, 220px);
             }
         }
 
@@ -790,6 +802,66 @@
                 width: 100%;
                 max-width: 400px;
             }
+            /* Stack hero columns */
+            .hero {
+                grid-template-columns: 1fr;
+                padding-top: 8rem;
+                gap: 2rem;
+            }
+
+            .hero-visual {
+                transform: translateX(0);
+                padding-right: 0;
+            }
+
+            /* Make project grid single column on small screens */
+            .project-grid {
+                grid-template-columns: 1fr !important;
+                gap: 18px;
+                padding: 0 1rem 2rem 1rem;
+            }
+
+            /* Hide floating tooltip buttons on small screens */
+            .tooltip-main {
+                display: none !important;
+            }
+
+            /* Responsive nav: show toggle */
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background: rgba(10,14,20,0.95);
+                width: 100%;
+                max-width: 320px;
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 0.75rem;
+                border-left: 1px solid rgba(255,255,255,0.02);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: inline-block;
+            }
+            /* reduce nav padding so header stays compact on phones */
+            nav { padding: 1rem 1rem; }
+            /* align logo and toggle nicely */
+            .logo { font-size: 1.25rem; }
+
+            /* smaller hero typography on mobile */
+            .hero-content h1 { font-size: 1.75rem; }
+            .hero-content .title { font-size: 1rem; }
+            .hero-content p { font-size: 0.98rem; }
+
+           
+            .card { width: 100%; height: auto; min-height: 180px; }
+            .social-media-list { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; padding:0 1rem; }
+            .hero-portrait { animation: none; transform: none; width: clamp(120px, 32vw, 220px); }
         }
 
         :root {
@@ -799,7 +871,7 @@
             --gap: 36px;
         }
 
-        /* wrapper to hide overflow and keep dark background */
+        
         .tech-marquee-wrapper {
             overflow: hidden;
             position: relative;
@@ -818,9 +890,8 @@
             display: flex;
             align-items: center;
             gap: var(--gap);
-            /* ensure groups sit inline */
             padding-right: 60px;
-            /* small breathing room between groups */
+            
         }
 
         /* each tech item: icon + label */
@@ -830,7 +901,7 @@
             align-items: center;
             justify-content: center;
             min-width: 100px;
-            /* keeps spacing consistent */
+           
             text-align: center;
             font-size: 12px;
             color: #cfd8dc;
@@ -903,6 +974,7 @@
     <!-- Navigation -->
     <nav>
         <div class="logo">rouie.Dev</div>
+        <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#projects">Projects</a></li>
@@ -1397,6 +1469,24 @@
             // run now and on window resize
             setDuration();
             window.addEventListener('resize', setDuration);
+        })();
+
+        // Mobile nav toggle
+        (function () {
+            const toggle = document.querySelector('.nav-toggle');
+            const links = document.querySelector('.nav-links');
+            if (!toggle || !links) return;
+
+            toggle.addEventListener('click', () => {
+                const isOpen = links.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+
+            // Close nav when a link is clicked (mobile)
+            links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+                links.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }));
         })();
     </script>
 </body>
