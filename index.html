@@ -58,15 +58,50 @@
             border: none;
             color: var(--text-primary);
             font-size: 1.4rem;
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1100;
         }
 
+        /* accessible helper */
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    .nav-toggle svg { width: 22px; height: 22px; display: inline-block; color: var(--text-primary); }
+    .nav-toggle { color: var(--text-primary); }
+
         .logo {
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.25rem;
             font-weight: 700;
+            flex: 0 0 auto; /* don't let the logo grow and push nav items */
             background: linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        /* Ensure inline SVG logo fits the header and scales responsively */
+        .logo svg {
+            height: 40px;
+            /* ideal desktop height */
+            width: auto !important;
+            max-width: 260px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .logo svg {
+                height: 30px;
+            }
+        }
+
+        /* Debug: force-show and style burger so it's visible during testing */
+        @media (max-width: 768px) {
+            .nav-toggle { display: inline-flex !important; align-items: center; justify-content: center; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; }
         }
 
         .nav-links {
@@ -220,8 +255,10 @@
 
         /* Portrait stays in the right column (in-flow) and scales responsively */
         .hero-portrait {
-            position: relative; /* in-flow so it doesn't overlap the left column */
-            margin-left: auto; /* keep it anchored to the right edge of its column */
+            position: relative;
+            /* in-flow so it doesn't overlap the left column */
+            margin-left: auto;
+            /* keep it anchored to the right edge of its column */
             width: clamp(140px, 20vw, 320px);
             aspect-ratio: 1 / 1;
             border-radius: 50%;
@@ -365,13 +402,187 @@
             border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
-        /* 🖼️ Image Style */
-        .card img {
+        /* --- Featured Project (Tailwind-like -> vanilla CSS) --- */
+        .featured-grid {
+            display: grid;
+            /* responsive columns: prefer 3 columns, but allow cards to shrink to a comfortable min width */
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: start;
+            padding: 0 6px;
+        }
+
+        .proj-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform .28s ease, box-shadow .28s ease;
+        }
+
+        .proj-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 40px rgba(2, 6, 23, 0.6);
+        }
+
+        .proj-media {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            display: block;
+        }
+
+        .proj-media img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease, filter 0.45s ease;
-            filter: saturate(0.95) contrast(0.95) brightness(0.92);
+            display: block;
+            transition: transform .35s ease;
+        }
+
+        .proj-card:hover .proj-media img {
+            transform: scale(1.04);
+        }
+
+        .proj-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .proj-title {
+            font-weight: 800;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        .proj-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.4
+        }
+
+        .proj-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 6px;
+        }
+
+        .proj-badges .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem .6rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        /* small icon inside badges */
+        .badge-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            object-fit: contain;
+        }
+
+        .proj-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 8px;
+        }
+
+        .btn-sm {
+            flex: 1;
+            padding: .6rem .75rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+        }
+
+        .btn-live {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%);
+            color: var(--primary);
+        }
+
+        .btn-code {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        @media (max-width: 1024px) {
+            .featured-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* keep responsive breakpoints but let auto-fit handle most sizing
+           these media queries provide additional control for specific thresholds */
+        @media (max-width: 1024px) {
+            .featured-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 0.9rem;
+            }
+        }
+
+        /* Force 3 columns on large (desktop) screens for consistent two-row layout */
+        @media (min-width: 1180px) {
+            .featured-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .featured-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+
+        /* Constrain proj-card max width so cards don't grow too wide on very large screens */
+        .proj-card {
+            max-width: 420px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* make media fixed at top and body expand so all cards in a row match height */
+        .proj-media {
+            flex: 0 0 auto;
+        }
+
+        .proj-body {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .proj-actions {
+            margin-top: auto;
+        }
+
+        /* Ensure images don't exceed container and maintain aspect ratio */
+        .proj-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         /* 🔄 Hover Effect sa Card */
@@ -776,6 +987,21 @@
             margin-top: 25px;
         }
 
+        /* Responsive footer */
+        .site-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 32px;
+            background-color: rgba(15, 20, 25, 0.95);
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .site-footer { padding: 16px 12px; font-size: 0.95rem; }
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             .section-header {
@@ -802,6 +1028,7 @@
                 width: 100%;
                 max-width: 400px;
             }
+
             /* Stack hero columns */
             .hero {
                 grid-template-columns: 1fr;
@@ -847,7 +1074,9 @@
             }
 
             /* Slightly reduce CTA spacing */
-            .cta-buttons { justify-content: center; }
+            .cta-buttons {
+                justify-content: center;
+            }
 
             /* Make project grid single column on small screens */
             .project-grid {
@@ -867,13 +1096,13 @@
                 position: absolute;
                 top: 100%;
                 right: 0;
-                background: rgba(10,14,20,0.95);
+                background: rgba(10, 14, 20, 0.95);
                 width: 100%;
                 max-width: 320px;
                 padding: 1rem 1.5rem;
                 flex-direction: column;
                 gap: 0.75rem;
-                border-left: 1px solid rgba(255,255,255,0.02);
+                border-left: 1px solid rgba(255, 255, 255, 0.02);
             }
 
             .nav-links.open {
@@ -883,20 +1112,50 @@
             .nav-toggle {
                 display: inline-block;
             }
+
             /* reduce nav padding so header stays compact on phones */
-            nav { padding: 1rem 1rem; }
+            nav {
+                padding: 1rem 0.75rem;
+            }
+
             /* align logo and toggle nicely */
-            .logo { font-size: 1.25rem; }
+            .logo {
+                font-size: 1.25rem;
+            }
 
             /* smaller hero typography on mobile */
-            .hero-content h1 { font-size: 1.75rem; }
-            .hero-content .title { font-size: 1rem; }
-            .hero-content p { font-size: 0.98rem; }
+            .hero-content h1 {
+                font-size: 1.75rem;
+            }
 
-           
-            .card { width: 100%; height: auto; min-height: 180px; }
-            .social-media-list { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; padding:0 1rem; }
-            .hero-portrait { animation: none; transform: none; width: clamp(120px, 32vw, 220px); }
+            .hero-content .title {
+                font-size: 1rem;
+            }
+
+            .hero-content p {
+                font-size: 0.98rem;
+            }
+
+
+            .card {
+                width: 100%;
+                height: auto;
+                min-height: 180px;
+            }
+
+            .social-media-list {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                flex-wrap: wrap;
+                padding: 0 1rem;
+            }
+
+            .hero-portrait {
+                animation: none;
+                transform: none;
+                width: clamp(120px, 32vw, 220px);
+            }
         }
 
         :root {
@@ -906,7 +1165,7 @@
             --gap: 36px;
         }
 
-        
+
         .tech-marquee-wrapper {
             overflow: hidden;
             position: relative;
@@ -926,7 +1185,7 @@
             align-items: center;
             gap: var(--gap);
             padding-right: 60px;
-            
+
         }
 
         /* each tech item: icon + label */
@@ -936,7 +1195,7 @@
             align-items: center;
             justify-content: center;
             min-width: 100px;
-           
+
             text-align: center;
             font-size: 12px;
             color: #cfd8dc;
@@ -1005,12 +1264,34 @@
 
         /* Extra small screens adjustments */
         @media (max-width: 480px) {
-            .hero { padding-top: 6rem; padding-bottom: 2rem; gap: 1.25rem; }
-            .hero-content h1 { font-size: 1.5rem; }
-            .hero-content p { font-size: 0.95rem; }
-            .hero-portrait { width: clamp(100px, 36vw, 180px); border-width: 4px; }
-            .cta-buttons { flex-direction: column; gap: 0.6rem; }
-            .btn { width: 100%; text-align: center; }
+            .hero {
+                padding-top: 6rem;
+                padding-bottom: 2rem;
+                gap: 1.25rem;
+            }
+
+            .hero-content h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-content p {
+                font-size: 0.95rem;
+            }
+
+            .hero-portrait {
+                width: clamp(100px, 36vw, 180px);
+                border-width: 4px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -1018,15 +1299,41 @@
 <body>
     <!-- Navigation -->
     <nav>
-        <div class="logo">rouie.Dev</div>
-        <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+    <div class="logo"><svg viewBox="0 0 450 75" fill="none"
+                xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="titleId">
+                <title id="titleId">rouievien.dev logo with code icon</title>
+                <defs>
+                    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#00A8FF;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#F0F0F0;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#FF8533;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+
+                <text x="0" y="55" font-family="Arial, sans-serif" font-size="50" fill="url(#textGradient)">
+                    &lt;/&gt;
+                </text>
+
+                <text x="85" y="54" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="50"
+                    fill="url(#textGradient)">
+                    rouievien.dev
+                </text>
+            </svg>
+        </div>
+            <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false"><span class="sr-only">Open navigation</span>
+                <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="6" width="18" height="2" fill="currentColor" />
+                    <rect x="3" y="11" width="18" height="2" fill="currentColor" />
+                    <rect x="3" y="16" width="18" height="2" fill="currentColor" />
+                </svg>
+            </button>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
     </nav>
 
     <!-- Hero Section -->
@@ -1035,7 +1342,7 @@
             <div class="title">Welcome to My Portfolio</div>
             <h1>Web Developer, UI/UX Designer & Video Editor</h1>
             <p>Crafting beautiful digital experiences across web, design, and motion. I specialize in creating
-                compelling interfaces, seamless user experiences, and engaging video content that captivate and inspire.
+                compelling interfaces, and engaging video content that captivate and inspire.
             </p>
 
             <div class="hero-stats">
@@ -1069,10 +1376,6 @@
     <!-- Tech Marquee -->
     <section class="py-4 bg-dark text-light">
         <div class="container">
-            <div class="text-center mb-3">
-                <small style="display: flex; align-items: center; justify-content: center;">Equipped me with the modern
-                    development tools that shape my techstack.</small>
-            </div>
 
             <div class="tech-marquee-wrapper">
                 <div class="tech-marquee" aria-hidden="false">
@@ -1211,71 +1514,121 @@
         <p class="section-subtitle">A selection of my best work across web development, design, and video production</p>
         <h2 class="section-title">My Projects</h2>
 
-        <div class="project-grid">
+        <div class="featured-grid">
 
-            <div class="card">
-                <img src="assets/cyber.jpg" alt="Cyber Project">
-                <div class="card__content">
-                    <p class="card__title">Security Breach</p>
-                    <p class="card__description">
-                        This project is a cybersecurity awareness campaign designed to educate individuals and
-                        organizations about the importance of cybersecurity. It includes informative materials,
-                        interactive activities, and resources to help users understand and mitigate cyber threats.
-                    </p>
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="Security Breach preview">
+                    <img src="assets/cyber.jpg" alt="Security Breach">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">Security Breach</div>
+                    <div class="proj-desc">This project is a cybersecurity awareness campaign designed to educate
+                        individuals and organizations about the importance of cybersecurity.</div>
+                    <div class="proj-badges">
+                        <span class="badge">Security</span>
+                        <span class="badge">Campaign</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Watch</a>
+
+                    </div>
                 </div>
-            </div>
+            </article>
 
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="Tiniente Gimo preview">
+                    <img src="assets/compiled eng400-Cover.jpg" alt="Tiniente Gimo">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">Tiniente Gimo: The First Aswang</div>
+                    <div class="proj-desc">A captivating short film that delves into the origins of the mythical
+                        creature known as the Aswang in Filipino folklore.</div>
+                    <div class="proj-badges">
+                        <span class="badge">Film</span>
+                        <span class="badge">Short</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Watch</a>
 
-            <div class="card">
-                <img src="assets/compiled eng400-Cover.jpg" alt="Cyber Project">
-                <div class="card__content">
-                    <p class="card__title">Tiniente Gimo: The First Aswang</p>
-                    <p class="card__description">
-                        "Tiniente Gimo: The First Aswang" is a captivating short film that delves into the origins of
-                        the mythical creature known as the Aswang in Filipino folklore. Tiniente
-                        Gimo, who accidentally killed his son, mistaking him for a visitor to be killed and eaten.
-                    </p>
+                    </div>
                 </div>
-            </div>
+            </article>
 
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="Migrasyon preview">
+                    <img src="assets/migrasyon.jpg" alt="Migrasyon">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">Migrasyon: Lipad Tungo sa Pangarap</div>
+                    <div class="proj-desc">A poignant short film that tells the story of workers who experienced
+                        trafficking and forced labor outside the country.</div>
+                    <div class="proj-badges">
+                        <span class="badge">Documentary</span>
+                        <span class="badge">Human Rights</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Watch</a>
 
-
-            <div class="card">
-                <img src="assets/migrasyon.jpg" alt="Cyber Project">
-                <div class="card__content">
-                    <p class="card__title">Migrasyon: Lipad Tungo sa Pangarap</p>
-                    <p class="card__description">
-                        "Migrasyon: Lipad Tungo sa Pangarap" is a poignant short film that tells the story of
-                        workers who experienced trafficking and forced labor outside the country.
-                    </p>
+                    </div>
                 </div>
-            </div>
+            </article>
 
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="Till Death preview">
+                    <img src="assets/till death.png" alt="Till Death">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">Till Death</div>
+                    <div class="proj-desc">A girl came to the province, and a farm worker fell in love with her. He soon
+                        died of a heart attack and cursed the girl.</div>
+                    <div class="proj-badges">
+                        <span class="badge">Short Film</span>
+                        <span class="badge">Drama</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Watch</a>
 
-            <div class="card">
-                <img src="assets/till death.png" alt="Cyber Project">
-                <div class="card__content">
-                    <p class="card__title">Till Death</p>
-                    <p class="card__description">
-                        A girl came to the province, and a farm worker fell in love with her. He soon died of a heart
-                        attack
-                        and cursed the girl, saying that even in death, he would continue to follow her.
-                    </p>
+                    </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="card">
-                <img src="assets/suicideprevention.png" alt="Cyber Project">
-                <div class="card__content">
-                    <p class="card__title">Suicide Prevention</p>
-                    <p class="card__description">
-                        "Suicide Prevention" is a short film about Lea, a girl facing life’s struggles who contemplates
-                        suicide.
-                        With the help of a friend reminding her that her grandmother is still alive
-                        and that life is worth living, she finds hope and chooses to keep going.
-                    </p>
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="Suicide Prevention preview">
+                    <img src="assets/suicideprevention.png" alt="Suicide Prevention">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">Suicide Prevention</div>
+                    <div class="proj-desc">A short film about Lea, a girl facing life’s struggles who contemplates
+                        suicide and eventually chooses hope.</div>
+                    <div class="proj-badges">
+                        <span class="badge">Awareness</span>
+                        <span class="badge">Short Film</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Watch</a>
+
+                    </div>
                 </div>
-            </div>
+            </article>
+
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="Documentary SSC preview">
+                    <img src="assets/Documentary SSC.png" alt="Documentary SSC">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">Documentary SSC</div>
+                    <div class="proj-desc">A documentary film that explores the rich culture and heritage of Santa
+                        Maria, Bulacan.</div>
+                    <div class="proj-badges">
+                        <span class="badge">Documentary</span>
+                        <span class="badge">Community</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Watch</a>
+
+                    </div>
+                </div>
+            </article>
 
         </div>
     </section>
@@ -1285,31 +1638,74 @@
         <h2 class="section-title">UI Designs</h2>
         <p class="section-subtitle">Selected UI and visual design pieces</p>
 
-        <div class="project-grid uiverse">
-            <div class="card">
-                <img src="assets/wise1.png" alt="UI Design 1">
-                <div class="card__content">
-                    <div class="card__title">UI Design</div>
-                    <p class="card__description">Our Capstone Project Wisely ICT = Web based Insightful System for
-                        Empowering of Youth Learners.</p>
+        <div class="featured-grid">
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="UI Design 1 preview">
+                    <img src="assets/wise1.png" alt="UI Design 1">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">UI Design</div>
+                    <div class="proj-desc">Our Capstone Project Wisely ICT — Web based Insightful System for Empowering
+                        of Youth Learners.</div>
+                    <div class="proj-badges">
+                        <span class="badge"><img class="badge-icon" src="assets/icons/html5.svg"
+                                alt="HTML5">HTML5</span>
+                        <span class="badge"><img class="badge-icon" src="assets/icons/css.svg" alt="Design">CSS</span>
+                        <span class="badge"><img class="badge-icon" src="assets/icons/javascript.svg"
+                                alt="Design">JavaScript</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Preview</a>
+                        <a class="btn-sm btn-code" href="#">Details</a>
+                    </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="card">
-                <img src="assets/ict2.png" alt="UI Design 2">
-                <div class="card__content">
-                    <div class="card__title">UI design</div>
-                    <p class="card__description">Our project in ICT300 "Student record management system".</p>
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="UI Design 2 preview">
+                    <img src="assets/ict2.png" alt="UI Design 2">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">UI Design</div>
+                    <div class="proj-desc">Our project in ICT300 — Student Record Management System (UI concept).</div>
+                    <div class="proj-badges">
+                        <span class="badge"><img class="badge-icon" src="assets/icons/html5.svg"
+                                alt="HTML5">HTML5</span>
+                        <span class="badge"><img class="badge-icon" src="assets/icons/bootstrap.svg"
+                                alt="Design">Bootstrap 4.6</span>
+                        <span class="badge"><img class="badge-icon" src="assets/icons/php_dark.svg"
+                                alt="Design">PHP</span>
+                        <span class="badge"><img class="badge-icon" src="assets/icons/mysql-wordmark-dark.svg"
+                                alt="Design">MySQL</span>
+                        <span class="badge"><img class="badge-icon" src="assets/icons/javascript.svg"
+                                alt="Design">JavaScript</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Preview</a>
+                        <a class="btn-sm btn-code" href="#">Details</a>
+                    </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="card">
-                <img src="assets/figma.png" alt="UI Design 3">
-                <div class="card__content">
-                    <div class="card__title">UI Design — figma Concept</div>
-                    <p class="card__description">Layout and component experiment for a dashboard UI in wisely ict.</p>
+            <article class="proj-card">
+                <a class="proj-media" href="#" aria-label="UI Design 3 preview">
+                    <img src="assets/figma.png" alt="UI Design 3">
+                </a>
+                <div class="proj-body">
+                    <div class="proj-title">UI Design — Figma Concept</div>
+                    <div class="proj-desc">Layout and component experiment for a dashboard UI in Wisely ICT.</div>
+                    <div class="proj-badges">
+                        <span class="badge"><img class="badge-icon" src="assets/icons/photoshop.svg"
+                                alt="Design">Design</span>
+                        <span class="badge"><img class="badge-icon" src="assets/icons/figma.svg"
+                                alt="Prototype">Prototype</span>
+                    </div>
+                    <div class="proj-actions">
+                        <a class="btn-sm btn-live" href="#">▶ Preview</a>
+                        <a class="btn-sm btn-code" href="#">Details</a>
+                    </div>
                 </div>
-            </div>
+            </article>
         </div>
     </section>
 
@@ -1386,7 +1782,8 @@
                         <span>09270295045</span>
                     </li>
                     <li>
-                        <a class="contact-icon" href="https://www.gmail.com/rouievienacasio23@gmail.com" aria-label="Email">
+                        <a class="contact-icon" href="https://www.gmail.com/rouievienacasio23@gmail.com"
+                            aria-label="Email">
                             <i class="fas fa-envelope"></i>
                         </a>
                         <span>rouievienacasio23@gmail.com</span>
@@ -1427,8 +1824,8 @@
 
 
     <!-- Footer -->
-    <footer style="display:flex; justify-content:center; align-items:center; padding:20px; background-color:rgba(15, 20, 25, 0.95);">
-        <p>&copy;All rights reserved.rouie.Dev</p>
+    <footer class="site-footer">
+        <p style="font-size: smaller;">&copy; 2025 Rouie Vien Acasio | Ui/Ux Designer, Video Editor | All rights reserved</p>
     </footer>
 
 
